@@ -1,0 +1,37 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.calculator {
+  /* TODO: Add calculator container styles */
+}
+
+.display {
+  /* TODO: Add display styles */
+}
+
+.display__previous {
+  /* TODO: Add previous display line styles */
+}
+
+.display__current {
+  /* TODO: Add current display line styles */
+}
+
+.buttons {
+  /* TODO: Add button grid layout */
+}
+
+.btn {
+  /* TODO: Add base button styles */
+}
