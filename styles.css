@@ -4,34 +4,347 @@
   padding: 0;
 }
 
+/* - - - VARIABLES & FONTS - - - */
+:root {
+  --background: #10070f;
+  --panel: rgba(30, 17, 32, 0.88);
+  --panel-border: rgba(255, 255, 255, 0.08);
+
+  --display: #100812;
+
+  --button: #18212b;
+  --button-hover: #6e6a7e;
+  --button-active: #757f89;
+
+  --operator: #7495a3;
+  --operator-hover: #195064;
+
+  --accent: #58ff77;
+  --accent-buttons: #58d5ff;
+  --accent-title: #58bcff;
+  --accent-soft: rgba(88, 230, 255, 0.15);
+
+  --text: #f5f8fa;
+  --text-muted: #aeb6bd;
+
+  font-family: "Orbitron", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
 body {
   min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 2rem;
+
+  background:
+      radial-gradient(
+          circle at 50% 20%,
+          #a6c0d6 0%,
+          #cad1da 42%,
+          #164685 100%
+      );
+
+  color: var(--text);
+}
+
+.app {
+  width: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
-  font-family: system-ui, -apple-system, sans-serif;
 }
 
 .calculator {
-  /* TODO: Add calculator container styles */
+  position: relative;
+
+  width: min(100%, 390px); /* full width until 390px, then caps */
+
+  padding: 1.25rem;
+
+  border: 1px solid var(--panel-border);
+  border-radius: 28px;
+
+  background:
+      linear-gradient(
+          145deg,
+          rgba(132, 142, 172, 0.96),
+          rgba(38, 56, 79, 0.96)
+      );
+
+  box-shadow:
+      0 35px 80px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  backdrop-filter: blur(20px); /* frosted-glass effect on whatever is behind the panel */
 }
 
+/* fake glass sheen laid over the panel, doesn't block clicks */
+.calculator::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  border-radius: inherit;
+
+  pointer-events: none;
+
+  background:
+      linear-gradient(
+          135deg,
+          rgba(88, 230, 255, 0.08),
+          transparent 35%
+      );
+}
+
+.calculator__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0.25rem 0.35rem 1rem;
+
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+}
+
+.calculator__brand {
+  color: var(--accent-title);
+  font-weight: 900;
+  font-size:x-large;
+}
+
+.calculator__model {
+  color: var(--text-muted);
+  transform: translateY(15px);
+}
+
+/* calc screen */
 .display {
-  /* TODO: Add display styles */
+  min-height: 125px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+
+  margin-bottom: 1rem;
+  padding: 1.25rem;
+
+  overflow: hidden;
+
+  border: 1px solid rgba(88, 230, 255, 0.08);
+  border-radius: 2px;
+
+  background:
+      linear-gradient(
+          180deg,
+          rgba(4, 9, 13, 0.98),
+          rgba(8, 14, 19, 0.98)
+      );
+
+  box-shadow:
+      inset 0 0 35px rgba(0, 0, 0, 0.6),
+      0 0 25px rgba(88, 230, 255, 0.03);
 }
 
 .display__previous {
-  /* TODO: Add previous display line styles */
+  min-height: 1.4rem;
+
+  margin-bottom: 0.35rem;
+
+  color: var(--text-muted);
+
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
 }
 
 .display__current {
-  /* TODO: Add current display line styles */
+  width: 100%;
+
+  overflow: hidden;
+
+  color: var(--text);
+
+  font-size: clamp(2rem, 8vw, 3.4rem); /* scales with screen width, stays between 2rem and 3.4rem */
+  font-weight: 300;
+  line-height: 1;
+
+  text-align: right;
+  white-space: nowrap; /* keep the result on one line... */
+  text-overflow: ellipsis; /* ...and truncate with "…" if it's too long to fit */
+
+  text-shadow:
+      0 0 18px rgba(88, 230, 255, 0.13);
 }
 
+/* keypad grid */
 .buttons {
-  /* TODO: Add button grid layout */
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 0.65rem;
 }
 
 .btn {
-  /* TODO: Add base button styles */
+  min-height: 66px;
+
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+
+  background:
+      linear-gradient(
+          145deg,
+          #1d2833,
+          #131b23
+      );
+
+  color: var(--text);
+
+  cursor: pointer;
+
+  font-family: inherit;
+  font-size: 1.2rem;
+  font-weight: 500;
+
+  box-shadow:
+      0 6px 14px rgba(0, 0, 0, 0.22),
+      inset 0 1px 0 rgba(255, 255, 255, 0.035);
+
+  transition:
+      transform 120ms ease,
+      border-color 120ms ease,
+      background 120ms ease,
+      box-shadow 120ms ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+
+  border-color: rgba(88, 230, 255, 0.15);
+
+  background: var(--button-hover);
+}
+
+.btn:active {
+  transform: translateY(1px) scale(0.98);
+
+  background: var(--button-active);
+}
+
+/* visible outline for keyboard/tab navigation only, not on mouse click */
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.btn--operator {
+  background:
+      linear-gradient(
+          145deg,
+          #173f50,
+          #102c38
+      );
+
+  color: var(--accent-buttons);
+}
+
+.btn--operator:hover {
+  background: var(--operator-hover);
+
+  box-shadow:
+      0 0 18px rgba(88, 230, 255, 0.1);
+}
+
+.btn--utility {
+  color: #9aa8b5;
+}
+
+.btn--equals {
+  border-color: rgba(88, 230, 255, 0.3);
+
+  background:
+      linear-gradient(
+          145deg,
+          #62e9ff,
+          #31bfd9
+      );
+
+  color: #061014;
+
+  font-weight: 700;
+
+  box-shadow:
+      0 8px 22px rgba(88, 230, 255, 0.18);
+}
+
+.btn--equals:hover {
+  border-color: rgba(29, 101, 113, 0.5);
+
+  background:
+      linear-gradient(
+          145deg,
+          #7deeff,
+          #40cee8
+      );
+
+  box-shadow:
+      0 10px 26px rgba(88, 230, 255, 0.28);
+}
+
+.btn--wide {
+  grid-column: span 2; /* takes up 2 of the 4 keypad columns (AC, 0) */
+}
+
+.calculator__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 1rem 0.25rem 0;
+
+  color: #9da9b4;
+
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.status__dot {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: var(--accent);
+
+  box-shadow:
+      0 0 8px var(--accent);
+}
+
+/* - - - MOBILE RESPONSIVITIES - - - */
+@media (max-width: 480px) {
+  body {
+      padding: 1rem;
+  }
+
+  .calculator {
+      padding: 1rem;
+      border-radius: 22px;
+  }
+
+  .btn {
+      min-height: 60px;
+  }
+
+  .display {
+      min-height: 110px;
+  }
 }
