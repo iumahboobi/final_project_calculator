@@ -3,22 +3,74 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Calculator</title>
+  <title>Final Project | Calculator</title>
+
+  <!-- robotic-looking font for the calculator -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <div class="calculator">
-    <div class="display">
-      <div class="display__previous"></div>
-      <div class="display__current"></div>
-    </div>
+  <main class="app">
+    <section class="calculator" aria-label="Calculator">
 
-    <div class="buttons">
-      <!-- TODO: Add calculator buttons here -->
-    </div>
-  </div>
+        <div class="calculator__top">
+            <span class="calculator__brand">CALCULATOR</span>
+        </div>
 
-  <script src="script.js"></script>
+        <!-- calc screen -->
+        <div class="display">
+            <div class="display__previous"></div>
+            <div class="display__current">0</div>
+        </div>
+
+        <!-- keypad -->
+        <div class="buttons">
+
+            <button class="btn btn--utility btn--wide" data-action="clear" type="button"> AC </button>
+            <button class="btn btn--utility" data-action="backspace" type="button" aria-label="Backspace"> ⌫ </button>
+            <button class="btn btn--operator" data-operator="/" type="button"> ÷ </button>
+
+            <button class="btn btn--number" data-number="7" type="button">7</button>
+            <button class="btn btn--number" data-number="8" type="button">8</button>
+            <button class="btn btn--number" data-number="9" type="button">9</button>
+
+            <button class="btn btn--operator" data-operator="*" type="button"> × </button>
+
+            <button class="btn btn--number" data-number="4" type="button">4</button>
+            <button class="btn btn--number" data-number="5" type="button">5</button>
+            <button class="btn btn--number" data-number="6" type="button">6</button>
+
+            <button class="btn btn--operator" data-operator="-" type="button"> − </button>
+
+            <button class="btn btn--number" data-number="1" type="button">1</button>
+            <button class="btn btn--number" data-number="2" type="button">2</button>
+            <button class="btn btn--number" data-number="3" type="button">3</button>
+
+            <button class="btn btn--operator" data-operator="+" type="button"> + </button>
+
+            <button class="btn btn--number btn--wide" data-number="0" type="button"> 0 </button>
+
+            <button class="btn btn--number" data-action="decimal" type="button"> . </button>
+
+            <button class="btn btn--equals" data-action="equals" type="button"> = </button>
+
+        </div>
+
+        <div class="calculator__footer">
+            <span>BY IHSANULLAH & PEDRO</span>
+            <span class="status">
+                <span class="status__dot"></span>
+                READY
+            </span>
+        </div>
+
+    </section>
+
+    <script src="script.js"></script>
+</main>
+
 </body>
 </html>

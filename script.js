@@ -1,241 +1,198 @@
-/* ================================================================
-   CALCULATOR LOGIC
-   1. STATE VARIABLES      — calculator memory between clicks
-   2. DOM REFERENCES       — cached element pointers
-   3. MATH OPERATORS       — add / subtract / multiply / divide
-   4. operate()            — picks + calls the right math fn
-   5. DISPLAY HELPERS      — updateDisplay(), formatNumber()
-   6. INPUT HANDLERS       — one per action type
-   7. KEYBOARD SUPPORT     — map keys → handlers
-   8. WIRING / BOOT        — attach listeners, initial paint
-   ================================================================ */
-
 'use strict';
 
-/* ================================================================
-   1. STATE VARIABLES
-   currentInput   string  "0"     — currently being typed
-   previousInput  number|null     — first number after operator press
-   selectedOp     string|null     — '+', '-', '*', '/'
-   shouldReset    bool            — next number click replaces input
-   ================================================================ */
 let currentInput = '0';
 let previousInput = null;
 let selectedOp = null;
 let shouldReset = false;
 
-/* ================================================================
-   2. DOM REFERENCES
-   ================================================================ */
 const displayCurrentEl = document.querySelector('.display__current');
 const displayPreviousEl = document.querySelector('.display__previous');
-const numberButtons = document.querySelectorAll('.btn--number');
+const numberButtons = document.querySelectorAll('.btn--number[data-number]');
 const operatorButtons = document.querySelectorAll('.btn--operator');
-const equalsButton = document.querySelector('.btn--equals');
-const clearButton = document.querySelector('.btn--clear');
-const backspaceButton = document.querySelector('.btn--backspace');
-const decimalButton = document.querySelector('.btn--decimal');
-
+const equalsButton = document.querySelector('[data-action="equals"]');
+const clearButton = document.querySelector('[data-action="clear"]');
+const backspaceButton = document.querySelector('[data-action="backspace"]');
+const decimalButton = document.querySelector('[data-action="decimal"]');
 /* ================================================================
-   3. MATH OPERATORS  (pure fns — test these in console first)
-   ================================================================ */
+JAVASCRIPT PROJECT - CALCULATOR   
+================================================================ */
 
-function add(a, b) {
-    return a + b;
+
+//Helper Functions
+// add function
+function add(num1, num2) {
+    return num1 + num2;
 }
 
-function subtract(a, b) {
-
-    return a - b;
+// subtract function
+function subtract(num1, num2) {
+    return num1 - num2;
 }
-
-function multiply(a, b) {
-
-    return a * b;
-
+// multiply function
+function multiply(num1, num2) {
+    return num1 * num2;
 }
-
-function divide(a, b) {
-    if (b === 0) {
-        console.log('divide by zero');
+// divide function
+function divide(num1, num2) {
+    if (num2 === 0) {
         return null;
     }
-    return a / b;
+    return num1 / num2;
 }
 
+function operate(op, num1, num2) {
 
-/* ================================================================
-   4. operate(op, a, b)   requirement b
-   switch on op → call matching math fn
-   round result before returning (requirement f.c)
-   ================================================================ */
-function operate(op, a, b) {
-    let result;
-
+    let result
     switch (op) {
         case "+":
-            result = add(a, b);
+            result = add(num1, num2)
             break;
         case "-":
-            result = subtract(a, b);
+            result = subtract(num1, num2)
             break;
         case "*":
-            result = multiply(a, b);
+            result = multiply(num1, num2)
             break;
         case "/":
-            result = divide(a, b);
+            result = divide(num1, num2)
             break;
         default:
-            console.log("invalid operator:", op);
             return null;
-    }
 
+    }
     if (typeof result === 'number') {
-        result = +result.toFixed(10);
+        return +result.toFixed(10)
     }
 
-    console.log("operate result:", result);
-    return result;
-}
-
-/* ================================================================
-   5. DISPLAY HELPERS
-   updateDisplay()  → push state values into DOM text
-   formatNumber(s)  → clean/trim long decimals for the display
-   ================================================================ */
-
-function updateDisplay() {
-    // TODO: displayCurrentEl.textContent = formatNumber(currentInput)
-    // TODO: displayPreviousEl.textContent = `${previousInput} ${opSymbol}` || ''
-}
-
-function formatNumber(numStr) {
-    // TODO: convert to number, round/trim, avoid 0.1 + 0.2 artifacts
-}
-
-/* ================================================================
-   6. INPUT HANDLERS
-
-   handleNumber(d)       — append digit OR replace if shouldReset
-   handleOperator(op)    — if prev+op already set → operate() first,
-                           then shift state (enables chaining f.a/b)
-   handleEquals()        — operate(), wipe prev/op, show result
-   handleClear()         — wipe ALL state  (requirement f.e)
-   handleDecimal()       — ONE dot only  (requirement g)
-   handleBackspace()     — pop last char  (requirement h)
-   ================================================================ */
-
-function handleNumber(digit) {
-    // TODO
-    // if (shouldReset) → currentInput = digit, shouldReset = false
-    // else if (currentInput === '0') → currentInput = digit (no leading 0)
-    // else → currentInput += digit
-}
-
-function handleOperator(op) {
-    // TODO — this is where chaining happens (requirement f.a / f.b)
-    //
-    // if (previousInput !== null && !shouldReset) {
-    //   // we already have a pair → evaluate, use result as new prev
-    //   const result = operate(selectedOp, previousInput, Number(currentInput));
-    //   // handle error (divide by 0) here too
-    //   currentInput = String(result);
-    // }
-    // previousInput = Number(currentInput);
-    // selectedOp = op;
-    // shouldReset = true;
-}
-
-function handleEquals() {
-    // TODO — requirement e + f.d + f.f
-    // guard: if (previousInput == null || selectedOp == null || shouldReset) return
-    // result = operate(selectedOp, previousInput, Number(currentInput))
-    // if result is error → show snarky message, clear state, return
-    // currentInput = String(result)
-    // previousInput = null; selectedOp = null; shouldReset = true;
+    return result
 }
 
 function handleClear() {
-    // TODO — requirement f.e
-    // reset ALL 4 state variables to defaults
-}
-
-function handleDecimal() {
-    // TODO — requirement g
-    // if (shouldReset) → currentInput = '0.'; shouldReset = false; return
-    // if (currentInput.includes('.')) → do nothing
-    // else → currentInput += '.'
+    currentInput = "0";
+    shouldReset = true;
+    previousInput = null;
+    selectedOp = null;
 }
 
 function handleBackspace() {
-    // TODO — requirement h
-    // if (shouldReset) return (nothing to delete yet)
-    // currentInput = currentInput.slice(0, -1)
-    // if (result === '' || result === '-') → back to '0'
+
+    if (shouldReset)
+        return
+
+    if (currentInput.length > 1) {
+        currentInput = currentInput.slice(0, -1)
+    }
+
+    else {
+        currentInput = '0'
+    }
 }
 
-/* ================================================================
-   7. KEYBOARD SUPPORT   (requirement h, last line)
-   keydown → switch on e.key → call matching handler
-   ================================================================ */
-function setupKeyboardSupport() {
-    // TODO:
-    // document.addEventListener('keydown', (e) => {
-    //   if (/^[0-9]$/.test(e.key))         → handleNumber(e.key)
-    //   else if (['+','-','*','/','%'].includes(e.key)) → handleOperator(e.key)
-    //   else if (e.key === 'Enter' || e.key === '=')    → handleEquals()
-    //   else if (e.key === 'Backspace')                 → handleBackspace()
-    //   else if (e.key === 'Escape' || e.key.toLowerCase() === 'c') → handleClear()
-    //   else if (e.key === '.')                         → handleDecimal()
-    //   then updateDisplay()
-    // })
+
+function handleOperator(op) {
+    previousInput = Number(currentInput);
+    shouldReset = true;
+    selectedOp = op;
 }
 
-/* ================================================================
-   8. WIRING — attach click listeners to each button group
-   ================================================================ */
-function setupEventListeners() {
+function handleEqual() {
 
-    numberButtons.forEach((btn) => {
-        btn.addEventListener('click', () => {
-            // const digit = btn.dataset.number;
-            // handleNumber(digit);
-            // updateDisplay();
-        });
-    });
+    if (previousInput === null || shouldReset) {
+        return
+    }
 
-    operatorButtons.forEach((btn) => {
-        btn.addEventListener('click', () => {
-            // const op = btn.dataset.operator;
-            // handleOperator(op);
-            // updateDisplay();
-        });
-    });
+    //previous input, extrac op , Number(currentInput)
+    const num1 = previousInput;
+    const num2 = Number(currentInput);
+    const result = operate(selectedOp, num1, num2)
 
-    equalsButton.addEventListener('click', () => {
-        // handleEquals();
-        // updateDisplay();
-    });
+    if (result === null) {
+        currentInput = "O-o"
+    }
 
+    else {
+        currentInput = String(result);
+    }
+    previousInput = null;
+    selectedOp = null
+    shouldReset = true;
+}
+
+// 1. Number buttons
+function mainFunction() {
+    //1.2 Pressing AC and make it 0
     clearButton.addEventListener('click', () => {
-        // handleClear();
-        // updateDisplay();
-    });
+        handleClear()
+        updateDisplay()
+    })
 
+    //1.3 Removing number digit by clicking backspace
     backspaceButton.addEventListener('click', () => {
-        // handleBackspace();
-        // updateDisplay();
-    });
+        handleBackspace()
+        updateDisplay()
+    })
 
-    decimalButton.addEventListener('click', () => {
-        // handleDecimal();
-        // updateDisplay();
-    });
+
+    //1.4 Decimal function
+
+
+    //1.5 Operator function
+    operatorButtons.forEach((operatorBtn) => {
+
+        operatorBtn.addEventListener('click', () => {
+            handleOperator(operatorBtn.dataset.operator)
+            updateDisplay()
+        })
+    })
+    //6. Equals function
+    equalsButton.addEventListener('click', () => {
+        handleEqual()
+        updateDisplay()
+    })
+
+    //6. Keyboard support
+    document.addEventListener('keydown', (e) => {
+
+        console.log(e)
+        if (e.key === 'Backspace') {
+            e.preventDefault() //in Firefox backspace will go back to previous page so use e.preventDefault()here
+            handleBackspace()
+            updateDisplay()
+        }
+        else if (e.key === '.') {
+            handleDecimal()
+            updateDisplay()
+        }
+        else if (e.key === 'Enter' || e.key === '=') {
+            e.preventDefault()
+            handleEqual()
+            updateDisplay()
+        }
+        else if (e.key === '+') {
+            handleOperator('+')
+            updateDisplay()
+        }
+        else if (e.key === '-') {
+            handleOperator('-')
+            updateDisplay()
+        }
+        else if (e.key === '*') {
+            handleOperator('*')
+            updateDisplay()
+        }
+        else if (e.key === '/') {
+            e.preventDefault()
+            handleOperator('/')
+            updateDisplay()
+        }
+        else if (/^[0-9]$/.test(e.key)) {
+            handleNumber(e.key)
+            updateDisplay()
+        }
+        else if (e.key.toLowerCase() === 'c' || e.key === 'Escape') {
+            handleClear()
+            updateDisplay()
+        }
+    })
 }
-
-/* ----------------------------------------------------------------
-   BOOT
-   ---------------------------------------------------------------- */
-setupEventListeners();
-setupKeyboardSupport();
-updateDisplay();
+mainFunction()
