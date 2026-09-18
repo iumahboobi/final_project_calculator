@@ -120,6 +120,11 @@ function handleEqual() {
 
 // 1. Number buttons
 function mainFunction() {
+
+    //1.1 Number buttons function here
+
+    
+
     //1.2 Pressing AC and make it 0
     clearButton.addEventListener('click', () => {
         handleClear()
