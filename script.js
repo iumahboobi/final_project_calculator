@@ -10,29 +10,14 @@ let isReset = false;
 const currentDisplay = document.querySelector(".display__current");
 const previousDisplay = document.querySelector(".display__previous");
 
-const numberButtons = document.querySelectorAll("[data-number]");
 const operatorButtons = document.querySelectorAll("[data-operator]");
 
 const decimalButton = document.querySelector('[data-action="decimal"]');
 const equalsButton = document.querySelector('[data-action="equals"]');
 
-//Math functions (add, subtract, multiply, divide)
-let currentInput = '0';
-let previousInput = null;
-let selectedOp = null;
-let shouldReset = false;
-
-const displayCurrentEl = document.querySelector('.display__current');
-const displayPreviousEl = document.querySelector('.display__previous');
 const numberButtons = document.querySelectorAll('.btn--number[data-number]');
-const operatorButtons = document.querySelectorAll('.btn--operator');
-const equalsButton = document.querySelector('[data-action="equals"]');
 const clearButton = document.querySelector('[data-action="clear"]');
 const backspaceButton = document.querySelector('[data-action="backspace"]');
-const decimalButton = document.querySelector('[data-action="decimal"]');
-/* ================================================================
-JAVASCRIPT PROJECT - CALCULATOR   
-
 
 //Helper Functions
 // add function
@@ -40,7 +25,6 @@ function add(num1, num2) {
     return num1 + num2;
 }
 
-// TODO: Display helpers (updateDisplay, formatNumber)
 function updateDisplay() {
     currentDisplay.textContent = currentInput;
 
@@ -52,7 +36,6 @@ function updateDisplay() {
     }
 }
 
-// TODO: Input handlers (number, operator, equals, clear, decimal, backspace)
 function handleNumber(pushedNumber) {
 
     if (isReset === true) {
@@ -62,58 +45,9 @@ function handleNumber(pushedNumber) {
         if (currentInput === "0") {
             currentInput = pushedNumber;
         } else {
-        currentInput = currentInput + pushedNumber;
+            currentInput = currentInput + pushedNumber;
         }
     }
-    updateDisplay();
-}
-
-function handleDecimal() {
-
-    if (isReset === true) {
-        currentInput = "0.";
-        isReset = false;
-    } else if (currentInput.includes(".")){
-        return;
-    } else {
-        currentInput = currentInput + ".";
-    }
-    updateDisplay();
-}
-
-function handleEquals() {
-
-    if (previousInput === null || operator === null || isReset === true){
-        return;
-    }
-    const inputValue = Number(currentInput);
-
-    const result = operate(operator, previousInput, inputValue);
-
-    currentInput = String(result);
-    previousInput = null;
-    operator = null;
-    isReset = true;
-
-    updateDisplay();
-}
-
-function handleOperator(selectedOperator) {
-    const inputValue = Number(currentInput);
-
-    if (previousInput === null) {
-        previousInput = inputValue;
-    }else if (operator !== null && isReset === false){
-        const result = operate(operator, previousInput, inputValue);
-
-        currentInput = String(result);
-        previousInput = result;
-    }
-
-    operator = selectedOperator;
-    isReset = true;
-
-    updateDisplay();
 }
 
 // subtract function
@@ -150,19 +84,8 @@ function operate(op, num1, num2) {
             break;
         default:
             return null;
-
-// TODO: Event listeners + boot
-numberButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-        handleNumber(button.dataset.number);
-    });
-});
-
-decimalButton.addEventListener("click", handleDecimal);
-equalsButton.addEventListener("click", handleEquals);
-
-
     }
+
     if (typeof result === 'number') {
         return +result.toFixed(10)
     }
@@ -172,91 +95,132 @@ equalsButton.addEventListener("click", handleEquals);
 
 function handleClear() {
     currentInput = "0";
-    shouldReset = true;
+    isReset = true;
     previousInput = null;
-    selectedOp = null;
+    operator = null;
 }
 
 function handleBackspace() {
 
-    if (shouldReset)
+    if (isReset)
         return
 
     if (currentInput.length > 1) {
         currentInput = currentInput.slice(0, -1)
     }
-
     else {
         currentInput = '0'
     }
 }
 
 
-function handleOperator(op) {
-    previousInput = Number(currentInput);
-    shouldReset = true;
-    selectedOp = op;
-}
+function handleOperator(selectedOperator) {
+    const inputValue = Number(currentInput);
 
-function handleEqual() {
+    if (previousInput === null) {
+        previousInput = inputValue;
+    } else if (operator !== null && isReset === false) {
+        const result = operate(operator, previousInput, inputValue);
 
-    if (previousInput === null || shouldReset) {
-        return
+        if (result === null) {
+
+            currentInput = "O-o";
+            previousInput = null;
+            operator = null;
+            isReset = true;
+            updateDisplay()
+            return
+        }
+
+
+        currentInput = String(result);
+        previousInput = result;
     }
 
-    //previous input, extrac op , Number(currentInput)
-    const num1 = previousInput;
-    const num2 = Number(currentInput);
-    const result = operate(selectedOp, num1, num2)
+    operator = selectedOperator;
+    isReset = true;
+}
+
+function handleEquals() {
+
+    if (previousInput === null || operator === null || isReset === true) {
+        return;
+    }
+    const inputValue = Number(currentInput);
+
+    const result = operate(operator, previousInput, inputValue);
 
     if (result === null) {
-        currentInput = "O-o"
+        currentInput = "O-o";
+        previousInput = null;
+        operator = null;
+        isReset = true;
+        updateDisplay()
+        return;
     }
-
-    else {
-        currentInput = String(result);
-    }
+    currentInput = String(result);
     previousInput = null;
-    selectedOp = null
-    shouldReset = true;
+    operator = null;
+    isReset = true;
 }
+
+function handleDecimal() {
+
+    if (isReset === true) {
+        currentInput = "0.";
+        isReset = false;
+
+    } else if (currentInput.includes(".")) {
+        return;
+    } else {
+        currentInput = currentInput + ".";
+    }
+}
+
 
 // 1. Number buttons
 function mainFunction() {
-    //1.2 Pressing AC and make it 0
+    //1.1 Pressing AC and make it 0
     clearButton.addEventListener('click', () => {
         handleClear()
         updateDisplay()
     })
 
-    //1.3 Removing number digit by clicking backspace
+    //1.2 Removing number digit by clicking backspace
     backspaceButton.addEventListener('click', () => {
         handleBackspace()
         updateDisplay()
     })
 
-
-    //1.4 Decimal function
-
-
-    //1.5 Operator function
+    //1.3 Decimal function
     operatorButtons.forEach((operatorBtn) => {
-
         operatorBtn.addEventListener('click', () => {
             handleOperator(operatorBtn.dataset.operator)
             updateDisplay()
         })
     })
-    //6. Equals function
+    //1.4 Equals function
     equalsButton.addEventListener('click', () => {
-        handleEqual()
+        handleEquals()
         updateDisplay()
     })
 
+    //1.5 Number buttons
+    numberButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            handleNumber(button.dataset.number);
+            updateDisplay()
+        });
+    });
+
+    //1.6 Decimal function
+    decimalButton.addEventListener("click", () => {
+        handleDecimal();
+        updateDisplay();
+    });
     //6. Keyboard support
     document.addEventListener('keydown', (e) => {
 
-        console.log(e)
         if (e.key === 'Backspace') {
             e.preventDefault() //in Firefox backspace will go back to previous page so use e.preventDefault()here
             handleBackspace()
@@ -268,7 +232,7 @@ function mainFunction() {
         }
         else if (e.key === 'Enter' || e.key === '=') {
             e.preventDefault()
-            handleEqual()
+            handleEquals()
             updateDisplay()
         }
         else if (e.key === '+') {
