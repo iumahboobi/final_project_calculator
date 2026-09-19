@@ -17,19 +17,19 @@ const clearButton = document.querySelector('[data-action="clear"]');
 const backspaceButton = document.querySelector('[data-action="backspace"]');
 
 //Helper Functions
-// add function
+
 function add(num1, num2) {
     return num1 + num2;
 }
-// subtract function
+
 function subtract(num1, num2) {
     return num1 - num2;
 }
-// multiply function
+
 function multiply(num1, num2) {
     return num1 * num2;
 }
-// divide function
+
 function divide(num1, num2) {
     if (num2 === 0) {
         return null;
@@ -97,7 +97,7 @@ function handleClear() {
 }
 
 function handleBackspace() {
-
+    
     if (isReset)
         return
 
@@ -118,7 +118,6 @@ function handleOperator(selectedOperator) {
         const result = operate(operator, previousInput, inputValue);
 
         if (result === null) {
-
             currentInput = "O-o";
             previousInput = null;
             operator = null;
@@ -160,7 +159,6 @@ function handleDecimal() {
     if (isReset === true) {
         currentInput = "0.";
         isReset = false;
-
     } else if (currentInput.includes(".")) {
         return;
     } else {
@@ -169,7 +167,7 @@ function handleDecimal() {
 }
 
 
-// 1. Number buttons
+// Main fucntion
 function mainFunction() {
     //1.1 Pressing AC and make it 0
     clearButton.addEventListener('click', () => {
@@ -209,7 +207,7 @@ function mainFunction() {
         handleDecimal();
         updateDisplay();
     });
-    //6. Keyboard support
+    //2. Keyboard support
     document.addEventListener('keydown', (e) => {
 
         if (e.key === 'Backspace') {
