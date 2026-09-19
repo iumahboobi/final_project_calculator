@@ -9,12 +9,9 @@ let isReset = false;
 //DOM references
 const currentDisplay = document.querySelector(".display__current");
 const previousDisplay = document.querySelector(".display__previous");
-
 const operatorButtons = document.querySelectorAll("[data-operator]");
-
 const decimalButton = document.querySelector('[data-action="decimal"]');
 const equalsButton = document.querySelector('[data-action="equals"]');
-
 const numberButtons = document.querySelectorAll('.btn--number[data-number]');
 const clearButton = document.querySelector('[data-action="clear"]');
 const backspaceButton = document.querySelector('[data-action="backspace"]');
@@ -24,32 +21,6 @@ const backspaceButton = document.querySelector('[data-action="backspace"]');
 function add(num1, num2) {
     return num1 + num2;
 }
-
-function updateDisplay() {
-    currentDisplay.textContent = currentInput;
-
-    if (previousInput !== null && operator !== null) {
-        previousDisplay.textContent =
-            `${previousInput} ${operator}`;
-    } else {
-        previousDisplay.textContent = "";
-    }
-}
-
-function handleNumber(pushedNumber) {
-
-    if (isReset === true) {
-        currentInput = pushedNumber;
-        isReset = false;
-    } else {
-        if (currentInput === "0") {
-            currentInput = pushedNumber;
-        } else {
-            currentInput = currentInput + pushedNumber;
-        }
-    }
-}
-
 // subtract function
 function subtract(num1, num2) {
     return num1 - num2;
@@ -93,6 +64,31 @@ function operate(op, num1, num2) {
     return result
 }
 
+function updateDisplay() {
+    currentDisplay.textContent = currentInput;
+
+    if (previousInput !== null && operator !== null) {
+        previousDisplay.textContent =
+            `${previousInput} ${operator}`;
+    } else {
+        previousDisplay.textContent = "";
+    }
+}
+
+function handleNumber(pushedNumber) {
+
+    if (isReset === true) {
+        currentInput = pushedNumber;
+        isReset = false;
+    } else {
+        if (currentInput === "0") {
+            currentInput = pushedNumber;
+        } else {
+            currentInput = currentInput + pushedNumber;
+        }
+    }
+}
+
 function handleClear() {
     currentInput = "0";
     isReset = true;
@@ -113,7 +109,6 @@ function handleBackspace() {
     }
 }
 
-
 function handleOperator(selectedOperator) {
     const inputValue = Number(currentInput);
 
@@ -131,12 +126,9 @@ function handleOperator(selectedOperator) {
             updateDisplay()
             return
         }
-
-
         currentInput = String(result);
         previousInput = result;
     }
-
     operator = selectedOperator;
     isReset = true;
 }
@@ -147,7 +139,6 @@ function handleEquals() {
         return;
     }
     const inputValue = Number(currentInput);
-
     const result = operate(operator, previousInput, inputValue);
 
     if (result === null) {
